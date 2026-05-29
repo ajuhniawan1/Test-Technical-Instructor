@@ -126,37 +126,37 @@ GET http://localhost:9099/health
 
 Password semua akun demo: `password123`.
 
-| Role | Email |
-|---|---|
-| Admin | `admin@example.com` |
+| Role    | Email                 |
+| ------- | --------------------- |
+| Admin   | `admin@example.com`   |
 | Trainer | `trainer@example.com` |
-| Talent | `talent@example.com` |
+| Talent  | `talent@example.com`  |
 
 ## Endpoint List
 
-| Area | Method | Endpoint | Role | Keterangan |
-|---|---|---|---|---|
-| Health | GET | `/health` | Public | Cek server hidup |
-| Auth | POST | `/api/v1/auth/login` | Public | Login dan menghasilkan JWT |
-| Auth | GET | `/api/v1/auth/me` | Login | Mengambil profil user dari token |
-| Class | POST | `/api/v1/classes` | Admin | Membuat class/batch |
-| Class | GET | `/api/v1/classes?page=1&limit=10` | Login | List class dengan pagination |
-| Class | GET | `/api/v1/classes/:id` | Login | Detail class |
-| Class | POST | `/api/v1/classes/:id/trainers` | Admin | Assign trainer ke class |
-| Class | POST | `/api/v1/classes/:id/talents` | Admin | Assign talent ke class |
-| Assignment | POST | `/api/v1/classes/:classId/assignments` | Admin/Trainer | Membuat assignment |
-| Assignment | GET | `/api/v1/classes/:classId/assignments` | Login | List assignment pada class |
-| Assignment | GET | `/api/v1/assignments/:id` | Login | Detail assignment |
-| Assignment | PUT | `/api/v1/assignments/:id` | Admin/Trainer | Update assignment |
-| Assignment | PATCH | `/api/v1/assignments/:id/close` | Admin/Trainer | Close assignment |
-| Submission | POST | `/api/v1/assignments/:assignmentId/submissions` | Talent | Submit assignment |
-| Submission | PUT | `/api/v1/submissions/:id` | Talent | Resubmit jika `revision_required` |
-| Submission | GET | `/api/v1/submissions/me` | Talent | List submission milik talent login |
-| Submission | GET | `/api/v1/classes/:classId/submissions` | Admin/Trainer | List submission class |
-| Review | POST | `/api/v1/submissions/:id/review` | Admin/Trainer | Review dengan score dan feedback |
-| Review | POST | `/api/v1/submissions/:id/request-revision` | Admin/Trainer | Meminta revisi |
-| Progress | GET | `/api/v1/classes/:classId/progress` | Admin/Trainer | Progress summary per class |
-| Progress | GET | `/api/v1/talents/:talentId/progress` | Admin/Trainer/Talent | Progress summary per talent |
+| Area       | Method | Endpoint                                        | Role                 | Keterangan                         |
+| ---------- | ------ | ----------------------------------------------- | -------------------- | ---------------------------------- |
+| Health     | GET    | `/health`                                       | Public               | Cek server hidup                   |
+| Auth       | POST   | `/api/v1/auth/login`                            | Public               | Login dan menghasilkan JWT         |
+| Auth       | GET    | `/api/v1/auth/me`                               | Login                | Mengambil profil user dari token   |
+| Class      | POST   | `/api/v1/classes`                               | Admin                | Membuat class/batch                |
+| Class      | GET    | `/api/v1/classes?page=1&limit=10`               | Login                | List class dengan pagination       |
+| Class      | GET    | `/api/v1/classes/:id`                           | Login                | Detail class                       |
+| Class      | POST   | `/api/v1/classes/:id/trainers`                  | Admin                | Assign trainer ke class            |
+| Class      | POST   | `/api/v1/classes/:id/talents`                   | Admin                | Assign talent ke class             |
+| Assignment | POST   | `/api/v1/classes/:classId/assignments`          | Admin/Trainer        | Membuat assignment                 |
+| Assignment | GET    | `/api/v1/classes/:classId/assignments`          | Login                | List assignment pada class         |
+| Assignment | GET    | `/api/v1/assignments/:id`                       | Login                | Detail assignment                  |
+| Assignment | PUT    | `/api/v1/assignments/:id`                       | Admin/Trainer        | Update assignment                  |
+| Assignment | PATCH  | `/api/v1/assignments/:id/close`                 | Admin/Trainer        | Close assignment                   |
+| Submission | POST   | `/api/v1/assignments/:assignmentId/submissions` | Talent               | Submit assignment                  |
+| Submission | PUT    | `/api/v1/submissions/:id`                       | Talent               | Resubmit jika `revision_required`  |
+| Submission | GET    | `/api/v1/submissions/me`                        | Talent               | List submission milik talent login |
+| Submission | GET    | `/api/v1/classes/:classId/submissions`          | Admin/Trainer        | List submission class              |
+| Review     | POST   | `/api/v1/submissions/:id/review`                | Admin/Trainer        | Review dengan score dan feedback   |
+| Review     | POST   | `/api/v1/submissions/:id/request-revision`      | Admin/Trainer        | Meminta revisi                     |
+| Progress   | GET    | `/api/v1/classes/:classId/progress`             | Admin/Trainer        | Progress summary per class         |
+| Progress   | GET    | `/api/v1/talents/:talentId/progress`            | Admin/Trainer/Talent | Progress summary per talent        |
 
 ## Catatan Role
 
@@ -175,10 +175,13 @@ Transaction digunakan pada:
 
 Pada review dan resubmit, sistem memakai `SELECT ... FOR UPDATE` agar dua proses tidak mengubah submission yang sama secara bersamaan.
 
-## Postman
+<!-- ## Postman
 
 Lihat contoh lengkap di:
 
 ```text
-docs/postman_examples.md
+docs/postman_examples.md -->
+
+```
+
 ```
