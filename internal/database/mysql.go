@@ -12,7 +12,7 @@ import (
 )
 
 // ConnectMySQL membuka koneksi ke database MySQL.
-// Kita memakai database/sql agar query lebih eksplisit dan mudah dijelaskan saat interview.
+// Kita memakai database/sql agar query lebih eksplisit dan mudah dijelaskan
 func ConnectMySQL(cfg config.Config) *sql.DB {
 	// parseTime=true penting agar field DATETIME MySQL bisa discan ke time.Time di Go.
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true&loc=Local",

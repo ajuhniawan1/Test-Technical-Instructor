@@ -68,6 +68,10 @@ func main() {
 		protected.POST("/classes/:id/trainers", middleware.RequireRole("admin"), classHandler.AssignTrainer)
 		protected.POST("/classes/:id/talents", middleware.RequireRole("admin"), classHandler.AssignTalent)
 
+		// Endpoint untuk melihat trainer/talent dalam class.
+		protected.GET("/classes/:id/trainers", middleware.RequireRole("admin", "trainer"), classHandler.ListTrainersByClass)
+		protected.GET("/classes/:id/talents", middleware.RequireRole("admin", "trainer"), classHandler.ListTalentsByClass)
+
 		// Assignment management.
 		protected.POST("/classes/:id/assignments", middleware.RequireRole("admin", "trainer"), assignmentHandler.CreateAssignment)
 		protected.GET("/classes/:id/assignments", assignmentHandler.ListAssignmentsByClass)

@@ -68,9 +68,6 @@ db/
   migrations/
     000001_init_schema.up.sql
     000001_init_schema.down.sql
-docs/
-  postman_examples.md
-  17_poin_mapping.md
 ```
 
 ## Setup

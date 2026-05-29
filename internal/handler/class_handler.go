@@ -112,6 +112,40 @@ func (h *ClassHandler) AssignTalent(c *gin.Context) {
 	utils.SuccessResponse(c, http.StatusOK, "Talent assigned to class", nil)
 }
 
+// ListTrainersByClass menampilkan daftar trainer pada class tertentu.
+func (h *ClassHandler) ListTrainersByClass(c *gin.Context) {
+	classID, err := parseIDParam(c, "id")
+	if err != nil {
+		utils.ErrorResponse(c, http.StatusBadRequest, "Invalid class id", err.Error())
+		return
+	}
+
+	trainers, err := h.classService.ListTrainersByClass(c.Request.Context(), classID)
+	if err != nil {
+		utils.ErrorResponse(c, http.StatusNotFound, "Failed to list class trainers", err.Error())
+		return
+	}
+
+	utils.SuccessResponse(c, http.StatusOK, "Class trainers fetched", trainers)
+}
+
+// ListTalentsByClass menampilkan daftar talent pada class tertentu.
+func (h *ClassHandler) ListTalentsByClass(c *gin.Context) {
+	classID, err := parseIDParam(c, "id")
+	if err != nil {
+		utils.ErrorResponse(c, http.StatusBadRequest, "Invalid class id", err.Error())
+		return
+	}
+
+	talents, err := h.classService.ListTalentsByClass(c.Request.Context(), classID)
+	if err != nil {
+		utils.ErrorResponse(c, http.StatusNotFound, "Failed to list class talents", err.Error())
+		return
+	}
+
+	utils.SuccessResponse(c, http.StatusOK, "Class talents fetched", talents)
+}
+
 // parseIDParam mengubah parameter URL menjadi uint64.
 func parseIDParam(c *gin.Context, name string) (uint64, error) {
 	id, err := strconv.ParseUint(c.Param(name), 10, 64)

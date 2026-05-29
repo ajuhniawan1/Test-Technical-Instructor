@@ -96,3 +96,23 @@ func (s *ClassService) AssignTalent(ctx context.Context, classID uint64, talentI
 	}
 	return s.classRepo.AssignTalent(ctx, classID, talentID)
 }
+
+// ListTrainersByClass mengambil daftar trainer dalam class tertentu.
+func (s *ClassService) ListTrainersByClass(ctx context.Context, classID uint64) ([]model.ClassTrainerMember, error) {
+	// Pastikan class-nya ada dulu.
+	if _, err := s.classRepo.FindByID(ctx, classID); err != nil {
+		return nil, err
+	}
+
+	return s.classRepo.ListTrainersByClass(ctx, classID)
+}
+
+// ListTalentsByClass mengambil daftar talent dalam class tertentu.
+func (s *ClassService) ListTalentsByClass(ctx context.Context, classID uint64) ([]model.ClassTalentMember, error) {
+	// Pastikan class-nya ada dulu.
+	if _, err := s.classRepo.FindByID(ctx, classID); err != nil {
+		return nil, err
+	}
+
+	return s.classRepo.ListTalentsByClass(ctx, classID)
+}

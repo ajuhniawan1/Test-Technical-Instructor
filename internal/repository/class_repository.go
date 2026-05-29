@@ -179,3 +179,95 @@ func (r *ClassRepository) CountClassesForTalent(ctx context.Context, talentID ui
 func ParseDate(value string) (time.Time, error) {
 	return time.Parse("2006-01-02", value)
 }
+
+// ListTrainersByClass mengambil daftar trainer yang terdaftar pada class tertentu.
+func (r *ClassRepository) ListTrainersByClass(ctx context.Context, classID uint64) ([]model.ClassTrainerMember, error) {
+	query := `
+		SELECT
+			ct.id,
+			ct.class_id,
+			ct.trainer_id,
+			u.name AS trainer_name,
+			u.email AS trainer_email,
+			u.role AS trainer_role,
+			ct.created_at
+		FROM class_trainers ct
+		JOIN users u ON u.id = ct.trainer_id
+		WHERE ct.class_id = ?
+		ORDER BY ct.created_at DESC
+	`
+
+	rows, err := r.db.QueryContext(ctx, query, classID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	items := make([]model.ClassTrainerMember, 0)
+
+	for rows.Next() {
+		var item model.ClassTrainerMember
+
+		if err := rows.Scan(
+			&item.ID,
+			&item.ClassID,
+			&item.TrainerID,
+			&item.TrainerName,
+			&item.TrainerEmail,
+			&item.TrainerRole,
+			&item.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+
+		items = append(items, item)
+	}
+
+	return items, rows.Err()
+}
+
+// ListTalentsByClass mengambil daftar talent yang terdaftar pada class tertentu.
+func (r *ClassRepository) ListTalentsByClass(ctx context.Context, classID uint64) ([]model.ClassTalentMember, error) {
+	query := `
+		SELECT
+			ct.id,
+			ct.class_id,
+			ct.talent_id,
+			u.name AS talent_name,
+			u.email AS talent_email,
+			u.role AS talent_role,
+			ct.created_at
+		FROM class_talents ct
+		JOIN users u ON u.id = ct.talent_id
+		WHERE ct.class_id = ?
+		ORDER BY ct.created_at DESC
+	`
+
+	rows, err := r.db.QueryContext(ctx, query, classID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	items := make([]model.ClassTalentMember, 0)
+
+	for rows.Next() {
+		var item model.ClassTalentMember
+
+		if err := rows.Scan(
+			&item.ID,
+			&item.ClassID,
+			&item.TalentID,
+			&item.TalentName,
+			&item.TalentEmail,
+			&item.TalentRole,
+			&item.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+
+		items = append(items, item)
+	}
+
+	return items, rows.Err()
+}

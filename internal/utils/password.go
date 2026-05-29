@@ -6,7 +6,7 @@ import (
 )
 
 // HashPasswordDemo membuat hash password sederhana menggunakan SHA-256.
-// Catatan penting untuk interview:
+// Catatan penting:
 // Ini dibuat agar project demo mudah dijalankan tanpa dependency tambahan.
 // Untuk production, gunakan bcrypt/argon2, bukan SHA-256 biasa.
 func HashPasswordDemo(password string) string {
