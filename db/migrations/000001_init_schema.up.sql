@@ -106,22 +106,78 @@ CREATE TABLE IF NOT EXISTS submission_histories (
 
 -- Password demo adalah SHA-256 dari: password123
 -- Untuk production, gunakan bcrypt/argon2.
+
 INSERT INTO users (id, name, email, password_hash, role) VALUES
 (1, 'Admin Demo', 'admin@example.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 'admin'),
-(2, 'Trainer Demo', 'trainer@example.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 'trainer'),
-(3, 'Talent Demo', 'talent@example.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 'talent')
-ON DUPLICATE KEY UPDATE email = VALUES(email);
+(2, 'Trainer Demo A', 'trainer@example.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 'trainer'),
+(3, 'Trainer Demo B', 'trainer2@example.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 'trainer'),
+(4, 'Talent Demo A', 'talent@example.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 'talent'),
+(5, 'Talent Demo B', 'talent2@example.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 'talent')
+ON DUPLICATE KEY UPDATE
+    name = VALUES(name),
+    email = VALUES(email),
+    password_hash = VALUES(password_hash),
+    role = VALUES(role);
 
 INSERT INTO classes (id, name, description, start_date, end_date) VALUES
-(1, 'Golang Backend Batch 1', 'Kelas demo untuk assessment backend', '2026-05-01', '2026-06-30')
-ON DUPLICATE KEY UPDATE name = VALUES(name);
+(1, 'Golang Backend Batch 1', 'Class A untuk negative test object-level authorization', '2026-05-01', '2026-06-30'),
+(2, 'Golang Backend Batch 2', 'Class B untuk negative test object-level authorization', '2026-06-01', '2026-07-31')
+ON DUPLICATE KEY UPDATE
+    name = VALUES(name),
+    description = VALUES(description),
+    start_date = VALUES(start_date),
+    end_date = VALUES(end_date);
 
-INSERT INTO class_trainers (class_id, trainer_id) VALUES (1, 2)
+-- Bersihkan mapping salah dari seed lama.
+DELETE FROM class_talents
+WHERE class_id = 1 AND talent_id = 3;
+
+-- Class A -> Trainer A
+-- Class B -> Trainer B
+INSERT INTO class_trainers (class_id, trainer_id) VALUES
+(1, 2),
+(2, 3)
 ON DUPLICATE KEY UPDATE trainer_id = trainer_id;
 
-INSERT INTO class_talents (class_id, talent_id) VALUES (1, 3)
+-- Class A -> Talent A
+-- Class B -> Talent B
+INSERT INTO class_talents (class_id, talent_id) VALUES
+(1, 4),
+(2, 5)
 ON DUPLICATE KEY UPDATE talent_id = talent_id;
 
+-- Assignment A -> Class A
+-- Assignment B -> Class B
 INSERT INTO assignments (id, class_id, title, description, deadline, status, created_by) VALUES
-(1, 1, 'Build REST API CRUD Product', 'Buat REST API CRUD Product menggunakan Go Gin dan MySQL', '2026-05-30 23:59:00', 'active', 2)
-ON DUPLICATE KEY UPDATE title = VALUES(title);
+(1, 1, 'Assignment A - REST API CRUD Product', 'Assignment milik Class A', '2026-06-30 23:59:00', 'active', 2),
+(2, 2, 'Assignment B - REST API CRUD Order', 'Assignment milik Class B', '2026-07-31 23:59:00', 'active', 3)
+ON DUPLICATE KEY UPDATE
+    class_id = VALUES(class_id),
+    title = VALUES(title),
+    description = VALUES(description),
+    deadline = VALUES(deadline),
+    status = VALUES(status),
+    created_by = VALUES(created_by);
+
+-- Submission A -> milik Talent A untuk Assignment A
+-- Submission B -> milik Talent B untuk Assignment B
+INSERT INTO submissions (
+    id,
+    assignment_id,
+    talent_id,
+    github_url,
+    deployment_url,
+    notes,
+    status,
+    submitted_at
+) VALUES
+(1, 1, 4, 'https://github.com/demo/talent-a-assignment-a', 'https://talent-a-demo.example.com', 'Submission A milik Talent A', 'submitted', '2026-06-10 10:00:00'),
+(2, 2, 5, 'https://github.com/demo/talent-b-assignment-b', 'https://talent-b-demo.example.com', 'Submission B milik Talent B', 'submitted', '2026-06-11 10:00:00')
+ON DUPLICATE KEY UPDATE
+    assignment_id = VALUES(assignment_id),
+    talent_id = VALUES(talent_id),
+    github_url = VALUES(github_url),
+    deployment_url = VALUES(deployment_url),
+    notes = VALUES(notes),
+    status = VALUES(status),
+    submitted_at = VALUES(submitted_at);

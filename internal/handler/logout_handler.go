@@ -9,8 +9,8 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-// Logout memasukkan JWT yang sedang dipakai ke Redis blacklist.
-// Jadi token yang sama tidak bisa dipakai lagi setelah logout.
+// Logout memasukkan JWT ke Redis blacklist dan menghapus idle session.
+// Jadi token tidak bisa dipakai lagi setelah logout.
 func Logout(redisClient *redis.Client) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token := middleware.GetBearerToken(c)
@@ -32,6 +32,10 @@ func Logout(redisClient *redis.Client) gin.HandlerFunc {
 				"message": "Gagal logout",
 			})
 			return
+		}
+
+		if err := middleware.DeleteIdleSession(c.Request.Context(), redisClient, token); err != nil {
+			log.Println("failed to delete idle session:", err)
 		}
 
 		c.JSON(200, gin.H{
