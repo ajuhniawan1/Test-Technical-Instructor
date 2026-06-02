@@ -711,9 +711,3 @@ protected.PUT(
 ```
 
 Kalau masih memakai `RequireAssignmentAccess(db, "id")` pada route `/submissions/:id`, maka `id` akan dianggap sebagai assignment ID, padahal yang dikirim adalah submission ID.
-
-## Interview Explanation
-
-Versi singkat untuk dijelaskan saat interview:
-
-> Backend ini menggunakan Go Gin dengan layered architecture. Request masuk ke router, melewati middleware security seperti JWT authentication, role authorization, Redis blacklist, Redis idle session, dan object-level authorization. Handler bertugas menerima request, service menyimpan business logic, dan repository mengakses MySQL. Redis digunakan untuk rate limiter login, token blacklist saat logout, idle session timeout, response cache, cache invalidation, dan distributed lock untuk mencegah double submit. Untuk data consistency, operasi submit, resubmit, dan review memakai database transaction, row locking, dan unique constraint.

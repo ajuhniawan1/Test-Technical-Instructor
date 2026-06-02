@@ -33,9 +33,9 @@ func RedisLock(redisClient *redis.Client, ttl time.Duration, keyFunc RedisLockKe
 			})
 			return
 		}
-
+	// untuk generate key yang unik berdasarkan request, misal berdasarkan user id dan assignment id.
 		lockKey := keyFunc(c)
-
+// Jika key tidak valid, bisa jadi karena parameter yang dibutuhkan tidak ada. Abort dengan 400.
 		if lockKey == "" {
 			c.AbortWithStatusJSON(400, gin.H{
 				"success": false,
@@ -43,7 +43,7 @@ func RedisLock(redisClient *redis.Client, ttl time.Duration, keyFunc RedisLockKe
 			})
 			return
 		}
-
+// Generate token unik untuk lock ini, agar saat release kita bisa pastikan hanya yang punya token ini yang bisa release locknya.
 		ctx := c.Request.Context()
 		lockToken := generateLockToken()
 
@@ -70,8 +70,16 @@ func RedisLock(redisClient *redis.Client, ttl time.Duration, keyFunc RedisLockKe
 		}
 
 		// Lepas lock setelah handler selesai.
-		defer releaseRedisLock(ctx, redisClient, lockKey, lockToken)
+		// defer releaseRedisLock(ctx, redisClient, lockKey, lockToken)
+		defer func() {
+			log.Println("RELEASE REDIS LOCK:", lockKey)
 
+			err := releaseLockScript.Run(ctx, redisClient, []string{lockKey}, lockToken).Err()
+			if err != nil {
+				log.Println("REDIS RELEASE LOCK ERROR:", err)
+			}
+		}()
+		
 		c.Next()
 	}
 }
